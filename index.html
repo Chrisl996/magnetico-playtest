@@ -215,6 +215,28 @@ const engine = new Engine(GODOT_CONFIG);
 	}
 }());
 		</script>
-	</body>
+<script>
+	async function enterLandscapeFullscreen() {
+		try {
+			if (!document.fullscreenElement) {
+				await document.documentElement.requestFullscreen();
+			}
+
+			if (screen.orientation && screen.orientation.lock) {
+				await screen.orientation.lock("landscape");
+			}
+		} catch (error) {
+			console.log("Landscape lock was not allowed:", error);
+		}
+	}
+
+	document.addEventListener(
+		"pointerdown",
+		enterLandscapeFullscreen,
+		{ once: true }
+	);
+</script>
+	
+</body>
 </html>
 
