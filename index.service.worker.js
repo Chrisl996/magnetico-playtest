@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1785338429|2178625336';
+const CACHE_VERSION = '1785341098|4848102803';
 /** @type {string} */
 const CACHE_PREFIX = 'Magnetico - Comb-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
