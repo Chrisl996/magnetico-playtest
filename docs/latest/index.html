@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Expires" content="0">
 		<title>Magnetico - Proton</title>
 		<style>
 html, body, #canvas {
@@ -215,9 +218,41 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
+		<script>
+		(async function () {
+			try {
+				if ("serviceWorker" in navigator) {
+					const registrations =
+						await navigator.serviceWorker.getRegistrations();
+
+					for (const registration of registrations) {
+						await registration.unregister();
+					}
+				}
+
+				if ("caches" in window) {
+					const cacheNames = await caches.keys();
+
+					for (const cacheName of cacheNames) {
+						await caches.delete(cacheName);
+					}
+				}
+
+				console.log(
+					"Magnetico latest: old service workers and caches cleared."
+				);
+			} catch (error) {
+				console.warn(
+					"Magnetico latest: cache cleanup failed.",
+					error
+				);
+			}
+		})();
+		</script>
+
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":11877204,"index.wasm":37900721},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":"index.service.worker.js"};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":11877204,"index.wasm":37900721},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,"serviceWorker":null};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
