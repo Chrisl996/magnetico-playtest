@@ -1,51 +1,95 @@
 @echo off
+setlocal
 title Magnetica - Update Latest Build
 
+REM ============================================================
+REM ALWAYS RUN RELATIVE TO THIS BAT FILE
+REM ============================================================
+
+cd /d "%~dp0"
+
+set "SOURCE=%~dp0latest_export"
+set "DEST=%~dp0docs\latest"
+
 echo.
 echo ==========================================
-echo      Updating Latest Build
+echo      MAGNETICA - UPDATE LATEST
 echo ==========================================
 echo.
-
-set "SOURCE=latest_export"
-set "DEST=docs\latest"
-
-if not exist "%SOURCE%" (
-    echo ERROR: "%SOURCE%" does not exist.
-    echo Export the Godot web build there first.
-    pause
-    exit /b 1
-)
-
-if not exist "%DEST%" (
-    echo ERROR: "%DEST%" does not exist.
-    echo Your existing GitHub latest folder could not be found.
-    pause
-    exit /b 1
-)
-
-echo Copying new Godot build...
-echo Preserving docs\latest\index.html
+echo Batch folder:
+echo %~dp0
+echo.
+echo Source:
+echo %SOURCE%
+echo.
+echo Destination:
+echo %DEST%
 echo.
 
-robocopy "%SOURCE%" "%DEST%" /E /XF index.html
+REM ============================================================
+REM CHECK FOLDERS
+REM ============================================================
 
-set "RESULT=%ERRORLEVEL%"
-
-if %RESULT% GEQ 8 (
+if not exist "%SOURCE%\" (
+    echo ERROR:
+    echo Could not find the latest_export folder.
     echo.
-    echo ERROR: Robocopy failed with code %RESULT%.
+    echo Expected:
+    echo %SOURCE%
+    echo.
     pause
-    exit /b %RESULT%
+    exit /b 1
 )
+
+if not exist "%DEST%\" (
+    echo ERROR:
+    echo Could not find docs\latest.
+    echo.
+    echo Expected:
+    echo %DEST%
+    echo.
+    pause
+    exit /b 1
+)
+
+REM ============================================================
+REM COPY BUILD
+REM ============================================================
+
+echo Copying new build files...
+echo.
+echo IMPORTANT:
+echo docs\latest\index.html will NOT be overwritten.
+echo.
+
+robocopy "%SOURCE%" "%DEST%" /E /COPY:DAT /DCOPY:T /R:1 /W:1 /XF index.html
+
+set "ROBO_RESULT=%ERRORLEVEL%"
 
 echo.
 echo ==========================================
-echo      Latest build updated!
+
+REM Robocopy codes 0-7 are successful/non-fatal.
+if %ROBO_RESULT% GEQ 8 (
+    echo COPY FAILED
+    echo Robocopy error code: %ROBO_RESULT%
+    echo ==========================================
+    echo.
+    pause
+    exit /b %ROBO_RESULT%
+)
+
+echo      LATEST BUILD UPDATED
 echo ==========================================
 echo.
-echo GitHub structure has NOT changed.
-echo docs\latest\index.html was NOT overwritten.
+echo Robocopy result code: %ROBO_RESULT%
+echo.
+echo Custom file preserved:
+echo %DEST%\index.html
+echo.
+echo Check GitHub Desktop now - the changed build files
+echo should appear under docs\latest.
 echo.
 
 pause
+endlocal
